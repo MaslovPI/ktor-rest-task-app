@@ -1,5 +1,6 @@
 # ktor-rest-task-app
-
+This is a ktor tutorial project from https://ktor.io/docs/server-create-a-new-project.html
+Itended use - refference for WebSockets, DB and testing
 This project was created using the [Ktor Project Generator](https://start.ktor.io).
 
 Here are some useful links to get you started:
