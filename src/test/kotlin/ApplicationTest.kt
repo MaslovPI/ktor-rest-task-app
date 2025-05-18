@@ -1,5 +1,7 @@
 package com.example
 
+import TaskRepository
+import com.example.model.FakeTaskRepository
 import com.example.model.Priority
 import com.example.model.Task
 import io.ktor.client.call.*
@@ -12,7 +14,6 @@ import io.ktor.http.*
 import io.ktor.serialization.kotlinx.KotlinxWebsocketSerializationConverter
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.testing.*
-import io.ktor.server.websocket.WebSockets
 import kotlinx.coroutines.flow.consumeAsFlow
 import kotlin.test.*
 import io.ktor.serialization.*
@@ -94,9 +95,10 @@ class ApplicationTest {
     @Test
     fun testRoot() = testApplication {
             application {
+                val repo : TaskRepository =  FakeTaskRepository()
                 configureRouting()
-                configureSerialization()
-                configureSockets()
+                configureSerialization(repo)
+                configureSockets(repo)
             }
 
             val client = createClient {

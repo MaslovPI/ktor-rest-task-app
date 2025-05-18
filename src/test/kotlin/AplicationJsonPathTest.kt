@@ -3,9 +3,9 @@ package com.example
 import com.jayway.jsonpath.DocumentContext
 import com.jayway.jsonpath.JsonPath
 import io.ktor.client.*
-import com.example.model.Priority
-import io.ktor.client.request.*
-import io.ktor.client.statement.*
+import io.ktor.client.request.accept
+import io.ktor.client.request.get
+import io.ktor.client.statement.bodyAsText
 import io.ktor.http.*
 import io.ktor.server.testing.*
 import kotlin.test.*

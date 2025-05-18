@@ -1,5 +1,6 @@
 package com.example
 
+import TaskRepository
 import com.example.model.Task
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.KotlinxWebsocketSerializationConverter
@@ -25,7 +26,7 @@ import org.jetbrains.exposed.sql.*
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver
 import java.util.Collections
 
-fun Application.configureSockets() {
+fun Application.configureSockets(repository: TaskRepository) {
     install(WebSockets) {
         contentConverter = KotlinxWebsocketSerializationConverter(Json)
         pingPeriod = 15.seconds
@@ -38,17 +39,17 @@ fun Application.configureSockets() {
             Collections.synchronizedList<WebSocketServerSession>(ArrayList())
 
         webSocket("/tasks") { // websocketSession
-            sendAllTasks()
+            sendAllTasks(repository)
             close(CloseReason(CloseReason.Codes.NORMAL, "All done"))
         }
 
         webSocket ("/tasks2"){
             sessions.add(this)
-            sendAllTasks()
+            sendAllTasks(repository)
 
             while(true) {
                 val newTask = receiveDeserialized<Task>()
-                TaskRepository.addTask(newTask)
+                repository.addTask(newTask)
                 sessions.map{
                     it.sendSerialized(newTask)
                 }
@@ -57,8 +58,8 @@ fun Application.configureSockets() {
     }
 }
 
-private suspend fun DefaultWebSocketServerSession.sendAllTasks() {
-    val tasks = TaskRepository.allTasks()
+private suspend fun DefaultWebSocketServerSession.sendAllTasks(repository: TaskRepository) {
+    val tasks = repository.allTasks()
     tasks.map{
         sendSerialized(it)
         delay(1000)
