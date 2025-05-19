@@ -18,21 +18,21 @@ class FakeTaskRepository : TaskRepository {
         }
     }
 
-    override fun allTasks(): List<Task> = tasks.values.toList()
+    override suspend fun allTasks(): List<Task> = tasks.values.toList()
 
-    override fun tasksByPriority(priority: Priority) = tasks.values.filter {
+    override suspend fun tasksByPriority(priority: Priority) = tasks.values.filter {
         it.priority == priority
     }
 
-    override fun taskByName(name: String) = tasks[name]
+    override suspend fun taskByName(name: String) = tasks[name]
 
-    override fun addTask(task: Task) {
+    override suspend fun addTask(task: Task) {
         if (tasks.containsKey(task.name))
             throw IllegalStateException("Cannot duplicate task names!")
         tasks[task.name] = task
     }
 
-    override fun removeTask (name: String): Boolean{
+    override suspend fun removeTask (name: String): Boolean{
         return tasks.remove(name) != null
     }
 }
